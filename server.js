@@ -17,21 +17,21 @@ const db = mysql.createConnection(
     user: 'root',
     // MySQL password
     password: '',
-    database: 'classlist_db'
+    database: 'data_db'
   },
-  console.log(`Connected to the classlist_db database.`)
+  console.log(`Connected to the data_db database.`)
 );
 
 // Query database
-db.query('SELECT * FROM departments', function (err, results) {
+db.query('SELECT * FROM department', function (err, results) {
   console.log(results);
 });
 
-db.query('SELECT * FROM roles', function (err, results) {
+db.query('SELECT * FROM role', function (err, results) {
     console.log(results);
   });
 
-  db.query('SELECT * FROM employees', function (err, results) {
+  db.query('SELECT * FROM employee', function (err, results) {
     console.log(results);
   });
 
