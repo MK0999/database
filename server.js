@@ -105,12 +105,12 @@ function addDepartment() {
 function addRole() {
   inquirer.prompt([
     {
-      type: 'Input',
+      type: 'input',
       message: 'Enter the title',
       name: 'title'
     },
     {
-      type: 'Input',
+      type: 'input',
       message: 'Enter the salary',
       name: 'salary'
     },
@@ -125,9 +125,14 @@ function addRole() {
     .then(response => {
       const title = response.title
       const salary = response.salary
+      let departmentID;
+
+      if(response.depname == `${response.depname.value}`){
+        departmentID = `${response.depname}`
+      }
       
 
-      db.query('INSERT INTO role(title,salary) VALUES (?,?)', [title, salary ], function (err, result) {
+      db.query('INSERT INTO role(title,salary,department_id) VALUES (?,?,?)', [title, salary, departmentID ], function (err, result) {
         if (err) throw err;
         menu()
         console.log(response.title)
