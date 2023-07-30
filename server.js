@@ -57,6 +57,9 @@ function menu() {
       else if (response.data === "add an employee") {
         addEmployee()
       }
+      else if (response.data === "update an employee role"){
+        updateEmployeeRole()
+      }
 
     })
 }
@@ -79,12 +82,15 @@ function viewDepartment() {
   });
 }
 function viewEmployee() {
-  const query= `SELECT employee.id, employee.first_name, employee.last_name, role.title , department.dep_name AS department role.salary, employee.first_name As manager
+  const query= `SELECT employee.id, employee.first_name, employee.last_name, role.title , department.dep_name AS department ,role.salary, employee.first_name As manager
     FROM employee
      LEFT JOIN role ON employee.role_id = role.id
-     LEFT JOIN department ON role.dapartment_id = department.id
-     LEFT JOIN  employee ON employee.manager_id = employee.id`;
+     LEFT JOIN department ON role.department_id = department.id
+     LEFT JOIN  employee manager ON manager.id = employee.manager_id`;
   db.query(query,(err, results) =>{
+    if(err){
+      console.log(err);
+    }
     console.table(results);
     menu()
   });
@@ -113,7 +119,7 @@ function addDepartment() {
 
 function addRole() {
   db.query("select dep_name name, id value from department", (err, data) => {
-    console.log(data),
+    
 
       inquirer.prompt([
         {
@@ -151,6 +157,8 @@ function addRole() {
 }
 
 function addEmployee() {
+  db.query("select title name, department_id value from role", (err, data) => {
+    console.log(data),
   inquirer.prompt([
     {
       type: 'Input',
@@ -163,35 +171,70 @@ function addEmployee() {
       name: 'last'
     },
     {
-      type: 'Input',
+      type: 'list',
       message: 'Enter the role',
       name: 'role',
       choices: data
 
     },
-    {
-      type: 'list',
-      message: 'Enter the manager',
-      name: 'manager',
-      choices: result
-
-    },
+    
   ])
     .then(response => {
       const firstname = response.first
       const lastname = response.last
       const role = response.role
-      const manager = response.manager
+      //const manager = response.manager
 
-      db.query('INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)', [firstname, lastname, role, manager], function (err, result) {
+      db.query('INSERT INTO employee(first_name, last_name, role_id) VALUES (?,?,?)', [firstname, lastname, role], function (err, result) {
         if (err) throw err;
-        menu()
-        console.log(response.firstname)
+        viewEmployee()
+        
       })
 
     })
+})
+
 }
 
+function updateEmployeeRole() {
+  const Employees= "Select CONCAT(first_name,' ',last_name) name, id value from employee";
+  const Roles = "Select title name, department_id value FROM role ";
+  db.query(Employees, (err, empdata) => {
+    if(err) throw err;
+    console.log(empdata)
+    db.query(Roles, (err, roledata) => {
+      if(err) throw err;
+      console.log(roledata)
+  inquirer.prompt([
+    {
+      type: 'list',
+      message: 'Select the employee',
+      name: 'first',
+      choices: empdata
+    },
+    {
+      type: 'list',
+      message: 'Select the new role',
+      name: 'last',
+      choices: roledata
+    },
+    
+    
+  ])
+    .then(response => {
+      const employeeName = response.first
+      const newRole = response.last
+      
 
+      db.query('INSERT INTO employee(first_name, role_id) VALUES (?,?)', [employeeName, newRole], function (err, result) {
+        if (err) throw err;
+        viewEmployee()
+        
+      })
+
+    })
+})
+  })
+}
 
 
