@@ -103,42 +103,45 @@ function addDepartment() {
 }
 
 function addRole() {
-  inquirer.prompt([
-    {
-      type: 'input',
-      message: 'Enter the title',
-      name: 'title'
-    },
-    {
-      type: 'input',
-      message: 'Enter the salary',
-      name: 'salary'
-    },
-    {
-      type: 'list',
-      message: 'Enter the department',
-      name: 'depname',
-      choices:['Engineering', 'Finance','Sales','Legal']
+  db.query("select dep_name name, id value from department", (err, data) => {
 
-    },
-  ])
-    .then(response => {
-      const title = response.title
-      const salary = response.salary
-      let departmentID;
 
-      if(response.depname == `${response.depname.value}`){
-        departmentID = `${response.depname}`
-      }
-      
+    inquirer.prompt([
+      {
+        type: 'input',
+        message: 'Enter the title',
+        name: 'title'
+      },
+      {
+        type: 'input',
+        message: 'Enter the salary',
+        name: 'salary'
+      },
+      {
+        type: 'list',
+        message: 'Enter the department',
+        name: 'depname',
+        choices: data
 
-      db.query('INSERT INTO role(title,salary,department_id) VALUES (?,?,?)', [title, salary, departmentID ], function (err, result) {
-        if (err) throw err;
-        menu()
-        console.log(response.title)
+      },
+    ])
+      .then(response => {
+        const title = response.title
+        const salary = response.salary
+        const departmentID = response.depname;
+
+       
+
+
+        db.query('INSERT INTO role(title,salary,department_id) VALUES (?,?,?)', [title, salary, departmentID], function (err, result) {
+          if (err) throw err;
+
+          viewDepartment()
+          console.log(response.title)
+        })
+
       })
-
-    })
+  })
 }
 
 function addEmployee() {
@@ -157,14 +160,14 @@ function addEmployee() {
       type: 'Input',
       message: 'Enter the role',
       name: 'role',
-      choices: ['Sales lead', 'Salesperson','Lead Engineer', 'Software Engineer', 'Account Manager', 'Accountant', 'Legal Lawyer', 'Lawyer']
+      choices: ['Sales lead', 'Salesperson', 'Lead Engineer', 'Software Engineer', 'Account Manager', 'Accountant', 'Legal Lawyer', 'Lawyer']
 
     },
     {
       type: 'list',
       message: 'Enter the manager',
       name: 'manager',
-      choices: ['John', 'Mike', 'Ashley', 'Kevin', 'Kunal','Malia','Sarah','Tom']
+      choices: ['John', 'Mike', 'Ashley', 'Kevin', 'Kunal', 'Malia', 'Sarah', 'Tom']
 
     },
   ])
@@ -174,7 +177,7 @@ function addEmployee() {
       const role = response.role
       const manager = response.manager
 
-      db.query('INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)', [firstname,lastname,role,manager], function (err, result) {
+      db.query('INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)', [firstname, lastname, role, manager], function (err, result) {
         if (err) throw err;
         menu()
         console.log(response.firstname)
