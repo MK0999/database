@@ -79,8 +79,12 @@ function viewDepartment() {
   });
 }
 function viewEmployee() {
-  db.query('SELECT employee.id, employee.first_name, employee.last_name, role.title AS role,  FROM employee LEFT JOIN role ON employee.role_id = role.id', 
-  function (err, results) {
+  const query= `SELECT employee.id, employee.first_name, employee.last_name, role.title , department.dep_name AS department role.salary, employee.first_name As manager
+    FROM employee
+     LEFT JOIN role ON employee.role_id = role.id
+     LEFT JOIN department ON role.dapartment_id = department.id
+     LEFT JOIN  employee ON employee.manager_id = employee.id`;
+  db.query(query,(err, results) =>{
     console.table(results);
     menu()
   });
