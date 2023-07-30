@@ -61,21 +61,26 @@ function menu() {
     })
 }
 function viewRoles() {
-  db.query('SELECT * FROM role', function (err, results) {
-    console.table(results);
-    menu()
-  });
+  // db.query('SELECT * FROM role', function (err, results) {
+  db.query(
+    'SELECT role.id, role.title, department.dep_name AS department, role.salary FROM role LEFT JOIN department on role.department_id = department.id',
+    function (err, results) {
+      console.table(results);
+      menu();
+    }
+  );
 
 }
 function viewDepartment() {
   // Query database
-  db.query('SELECT * FROM department', function (err, results) {
+  db.query('', function (err, results) {
     console.table(results);
     menu()
   });
 }
 function viewEmployee() {
-  db.query('SELECT * FROM employee', function (err, results) {
+  db.query('SELECT employee.id, employee.first_name, employee.last_name, role.title AS role,  FROM employee LEFT JOIN role ON employee.role_id = role.id', 
+  function (err, results) {
     console.table(results);
     menu()
   });
@@ -104,43 +109,40 @@ function addDepartment() {
 
 function addRole() {
   db.query("select dep_name name, id value from department", (err, data) => {
+    console.log(data),
 
+      inquirer.prompt([
+        {
+          type: 'input',
+          message: 'Enter the title',
+          name: 'title'
+        },
+        {
+          type: 'input',
+          message: 'Enter the salary',
+          name: 'salary'
+        },
+        {
+          type: 'list',
+          message: 'Enter the department',
+          name: 'depname',
+          choices: data
 
-    inquirer.prompt([
-      {
-        type: 'input',
-        message: 'Enter the title',
-        name: 'title'
-      },
-      {
-        type: 'input',
-        message: 'Enter the salary',
-        name: 'salary'
-      },
-      {
-        type: 'list',
-        message: 'Enter the department',
-        name: 'depname',
-        choices: data
+        },
+      ])
+        .then(response => {
+          const title = response.title
+          const salary = response.salary
+          const departmentID = response.depname;
 
-      },
-    ])
-      .then(response => {
-        const title = response.title
-        const salary = response.salary
-        const departmentID = response.depname;
+          db.query('INSERT INTO role(title,salary,department_id) VALUES (?,?,?)', [title, salary, departmentID], function (err, result) {
+            if (err) throw err;
 
-       
+            viewRoles()
 
+          })
 
-        db.query('INSERT INTO role(title,salary,department_id) VALUES (?,?,?)', [title, salary, departmentID], function (err, result) {
-          if (err) throw err;
-
-          viewDepartment()
-          console.log(response.title)
         })
-
-      })
   })
 }
 
@@ -160,14 +162,14 @@ function addEmployee() {
       type: 'Input',
       message: 'Enter the role',
       name: 'role',
-      choices: ['Sales lead', 'Salesperson', 'Lead Engineer', 'Software Engineer', 'Account Manager', 'Accountant', 'Legal Lawyer', 'Lawyer']
+      choices: data
 
     },
     {
       type: 'list',
       message: 'Enter the manager',
       name: 'manager',
-      choices: ['John', 'Mike', 'Ashley', 'Kevin', 'Kunal', 'Malia', 'Sarah', 'Tom']
+      choices: result
 
     },
   ])
