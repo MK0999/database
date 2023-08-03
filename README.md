@@ -22,6 +22,7 @@ THEN  prompted to enter the employee’s first name, last name, role, and manage
 THEN prompted to select an employee to update and their new role and this information is updated in the database
 
 # Screenshots
+https://github.com/MK0999/database/blob/main/SCREENSHOTS/Screenshot%20(52).png
 
 # Credit
   -Bootcamp study material
