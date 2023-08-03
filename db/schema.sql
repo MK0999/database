@@ -2,12 +2,12 @@ DROP DATABASE IF EXISTS data_db;
 CREATE DATABASE data_db;
 
 USE data_db;
-
+-- Create table Department with database data_db--
 CREATE TABLE department(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     dep_name VARCHAR(30) NOT NULL
 );
-
+-- Create table Role with database data_db--
 CREATE TABLE role(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30),
@@ -17,7 +17,7 @@ CREATE TABLE role(
     REFERENCES department(id)
     ON DELETE SET NULL
 );
-
+-- Create table Employee with database data_db--
 CREATE TABLE employee(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,

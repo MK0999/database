@@ -21,6 +21,8 @@ const db = mysql.createConnection(
 db.connect(() => {
   menu()
 })
+
+//Create a main function menu with inquirer
 function menu() {
   inquirer.prompt([
     {
@@ -68,8 +70,10 @@ function menu() {
 
     })
 }
+
+// function to check role of employee
 function viewRoles() {
-  // db.query('SELECT * FROM role', function (err, results) {
+  
   db.query(
     'SELECT role.id, role.title, department.dep_name AS department, role.salary FROM role LEFT JOIN department on role.department_id = department.id',
     function (err, results) {
@@ -77,9 +81,9 @@ function viewRoles() {
       menu();
     }
   );
-
-
 }
+
+// function to view department
 function viewDepartment() {
   // Query database
   db.query('SELECT * FROM department', function (err, results) {
@@ -87,6 +91,8 @@ function viewDepartment() {
     menu()
   });
 }
+
+//function to view employee all data eith joining all tables
 function viewEmployee() {
   const query = `SELECT employee.id, employee.first_name, employee.last_name, role.title , department.dep_name AS department ,role.salary, employee.first_name As manager
     FROM employee
@@ -102,6 +108,7 @@ function viewEmployee() {
   });
 }
 
+//function to add department
 function addDepartment() {
   inquirer.prompt([
     {
@@ -117,12 +124,13 @@ function addDepartment() {
         if (err) throw err;
         console.log(`Added department ${response.department} to the database!`);
 
-        menu()
+        viewDepartment()
         console.log(response.department)
       })
     })
 }
 
+//finction to add role to employee
 function addRole() {
   db.query("select dep_name name, id value from department", (err, data) => {
 
@@ -161,7 +169,7 @@ function addRole() {
       })
   })
 }
-
+// function to add employee
 function addEmployee() {
   db.query("select title name, id value from role", (err, data) => {
 
@@ -204,6 +212,7 @@ function addEmployee() {
 
 }
 
+//function to update an employee
 function updateEmployeeRole() {
   const Employees = "Select CONCAT(first_name,' ',last_name) name, id value from employee";
   const Roles = "Select title name, id value FROM role ";
@@ -232,8 +241,6 @@ function updateEmployeeRole() {
         .then(response => {
           const employeeName = response.first
           const newRole = response.last
-
-
           db.query(' UPDATE employee SET role_id = ? WHERE ID = ?', [newRole, employeeName], function (err, result) {
             if (err) throw err;
             viewEmployee()
@@ -245,13 +252,11 @@ function updateEmployeeRole() {
   })
 }
 
-
+// function to delete an employee
 function deleteEmployee() {
-
-
-  db.query("Select CONCAT(first_name,' ',last_name) name, id value from employee", (err, res) => {
+db.query("Select CONCAT(first_name,' ',last_name) name, id value from employee", (err, res) => {
     if (err) throw err;
-    console.log(res);
+    
 
     inquirer.prompt([
       {

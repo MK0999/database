@@ -1,9 +1,13 @@
+
+-- insert data in table department--
 INSERT INTO department(dep_name)
 VALUES( "Sales"),
 ( "Engineering"),
 ( "Finance"),
 ("Legal");
 
+
+-- insert data in table role--
 INSERT INTO role ( title, salary, department_id)
 VALUES("Sales Lead", 100000, 1 ),
 ("Salesperson", 8000, 1),
@@ -14,6 +18,8 @@ VALUES("Sales Lead", 100000, 1 ),
 ( "Legal Lawyer", 250000, 4),
 ( "Lawyer", 190000,4);
 
+
+-- insert data in table employee--
 INSERT INTO employee(first_name, last_name, role_id, manager_id)
 VALUES("John","Doe", 1, 1),
 ( "Mike", "Chan", 2, 2),
